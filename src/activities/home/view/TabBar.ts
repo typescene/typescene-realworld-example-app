@@ -6,17 +6,17 @@ export default TabBar.with(
         label: "Your Feed",
         onClick: "showProfileFeed()",
         hidden: bind("!userService.isLoggedIn"),
-        selected: bind("visibleFeed").match("feed")
+        selected: bind("visibleFeed").match("feed"),
     }),
     TabBarButton.with({
         label: "Global Feed",
         onClick: "showGlobalFeed()",
-        selected: bind("visibleFeed").match("global")
+        selected: bind("visibleFeed").match("global"),
     }),
     TabBarButton.with({
         label: bindf("#${selectedTag}"),
         hidden: bind("!selectedTag"),
         selected: bind("visibleFeed").match("tag"),
-        onClick: "showTagFeed()"
+        onClick: "showTagFeed()",
     })
-)
+);

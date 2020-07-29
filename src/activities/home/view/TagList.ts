@@ -1,24 +1,32 @@
-import { bind, tl, UICell, UICloseLabel, UIFlowCell, UIListCellAdapter, UIListController, UIRow, UISmallButton, UISpacer } from "typescene";
+import {
+    bind,
+    UICell,
+    UICloseLabel,
+    UIFlowCell,
+    UIListCellAdapter,
+    UIListController,
+    UIRow,
+    UISmallButton,
+    UISpacer,
+    UILabel,
+} from "typescene";
 import * as styles from "../../../styles";
 
 export default UIFlowCell.with(
     {
         position: { gravity: "start" },
         dimensions: { width: 0, minWidth: 245, grow: 1 },
-        padding: { x: 8 }
+        padding: { x: 8 },
     },
     UIFlowCell.with(
         {
             background: "@background^-5%",
             borderRadius: 4,
-            padding: 8
+            padding: 8,
         },
         UIRow.with(UICloseLabel.withText("Popular Tags")),
         UISpacer,
-        UIFlowCell.with(
-            { hidden: bind("!loading"), padding: 16 },
-            UIRow.with(tl("Loading..."))
-        ),
+        UIFlowCell.with({ hidden: bind("!loading"), padding: 16 }, UIRow.with(UILabel.withText("Loading..."))),
         UIListController.with(
             { items: bind("allTags") },
             UIListCellAdapter.with(
@@ -29,12 +37,12 @@ export default UIFlowCell.with(
                 UISmallButton.with({
                     label: bind("object.tag"),
                     onClick: "+SelectTag",
-                    style: styles.tagButtonStyle
-                }),
+                    style: styles.tagButtonStyle,
+                })
             ),
             UICell.with({
-                layout: { distribution: "start", axis: "horizontal", wrapContent: true }
+                layout: { distribution: "start", axis: "horizontal", wrapContent: true },
             })
         )
     )
-)
+);

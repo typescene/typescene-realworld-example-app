@@ -1,4 +1,4 @@
-import { managedChild, ManagedRecord, PageViewActivity, service, UIListCellAdapterEvent } from "typescene";
+import { managedChild, PageViewActivity, service, UIListCellAdapterEvent, ManagedRecord } from "typescene";
 import { FEED_LIMIT } from "../../app";
 import { ArticleFeed, ArticlesService } from "../../services/Articles";
 import { Tag, TagList, TagsService } from "../../services/Tags";
@@ -55,8 +55,7 @@ export class HomeActivity extends PageViewActivity.with(view) {
             (async () => {
                 try {
                     this.allTags = await this.tagsService.getTagsAsync();
-                }
-                catch (err) {
+                } catch (err) {
                     console.log(err);
                 }
                 this.loading = false;
@@ -69,12 +68,9 @@ export class HomeActivity extends PageViewActivity.with(view) {
         if (this.userService.profile) {
             // might have logged in or subscribed here
             try {
-                this.profileFeed = this.articlesService
-                    .getArticleFeed({ limit: FEED_LIMIT }, true);
-            }
-            catch { }
-        }
-        else if (this.visibleFeed === "feed") {
+                this.profileFeed = this.articlesService.getArticleFeed({ limit: FEED_LIMIT }, true);
+            } catch {}
+        } else if (this.visibleFeed === "feed") {
             // this may happen right after logging out
             this.showGlobalFeed();
         }
@@ -115,16 +111,18 @@ export class HomeActivity extends PageViewActivity.with(view) {
             this.selectedTag = e.object.tag;
             this.tagFeed = this.articlesService.getArticleFeed({
                 tag: e.object.tag,
-                limit: FEED_LIMIT
+                limit: FEED_LIMIT,
             });
             this.showTagFeed();
         }
     }
 }
 
-HomeActivity.observe(class {
-    constructor (public readonly activity: HomeActivity) { }
-    onUserServiceChangeAsync() {
-        this.activity.loadProfileFeedAsync();
+HomeActivity.addObserver(
+    class {
+        constructor(public readonly activity: HomeActivity) {}
+        onUserServiceChangeAsync() {
+            this.activity.loadProfileFeedAsync();
+        }
     }
-})
+);

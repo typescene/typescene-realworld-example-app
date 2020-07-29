@@ -1,4 +1,4 @@
-import { ManagedRecord, PageViewActivity, service } from "typescene";
+import { PageViewActivity, service, UIFormContext, managedChild } from "typescene";
 import { UserService } from "../../services/User";
 import view from "./view";
 
@@ -9,12 +9,16 @@ export class RegisterActivity extends PageViewActivity.with(view) {
     @service("App.User")
     userService!: UserService;
 
-    /** Input form record */
-    inputForm = ManagedRecord.create({
+    /** Input form fields */
+    @managedChild
+    formContext = UIFormContext.create({
         username: "",
         email: "",
-        password: ""
-    });
+        password: "",
+    })
+        .required("username")
+        .required("email")
+        .required("password");
 
     /** True if the registration data is currently being sent */
     loading = false;
@@ -31,22 +35,20 @@ export class RegisterActivity extends PageViewActivity.with(view) {
 
     /** Event handler: submit registration data */
     async doRegister() {
-        if (!this.inputForm.username ||
-            !this.inputForm.email ||
-            !this.inputForm.password ||
-            this.loading) {
-            return;
-        }
+        this.formContext.validateAll();
+        console.log("Validate", this.formContext);
+        if (!this.formContext.valid) return;
         this.loading = true;
         try {
             // call the API and navigate away
             await this.userService.registerAsync(
-                this.inputForm.username,
-                this.inputForm.email,
-                this.inputForm.password);
+                this.formContext.get("username")!,
+                this.formContext.get("email")!,
+                this.formContext.get("password")!
+            );
             this.getApplication()!.navigate("/");
-        }
-        catch (err) {
+        } catch (err) {
+            debugger;
             this.showConfirmationDialogAsync(err.message);
         }
         this.loading = false;

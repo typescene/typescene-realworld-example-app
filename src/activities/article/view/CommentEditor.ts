@@ -1,4 +1,13 @@
-import { bind, UIBorderlessTextField, UIFlowCell, UIImage, UIPrimaryButton, UIRow, UISeparator, UISpacer } from "typescene";
+import {
+    bind,
+    UIBorderlessTextField,
+    UIFlowCell,
+    UIImage,
+    UIPrimaryButton,
+    UIRow,
+    UISeparator,
+    UISpacer,
+} from "typescene";
 import * as styles from "../../../styles";
 
 export default UIFlowCell.with(
@@ -7,7 +16,7 @@ export default UIFlowCell.with(
         borderColor: "@text/20%",
         borderRadius: 4,
         borderThickness: 1,
-        layout: { clip: true }
+        layout: { clip: true },
     },
 
     // top part of the editor card: text field itself
@@ -20,12 +29,12 @@ export default UIFlowCell.with(
                 multiline: true,
                 dimensions: { height: 100 },
                 style: styles.formFieldStyle.extend({
-                    controlStyle: {
+                    decoration: {
                         background: "@white",
-                        css: { padding: "1rem .5rem" }
+                        css: { padding: "1rem .5rem" },
                     },
-                    textStyle: { fontSize: 16, lineHeight: 1.4 }
-                })
+                    textStyle: { fontSize: 16, lineHeight: 1.4 },
+                }),
             })
         )
     ),
@@ -35,13 +44,13 @@ export default UIFlowCell.with(
     UIFlowCell.with(
         {
             background: "@background^-5%",
-            padding: { left: 24, right: 16, y: 8 }
+            padding: { left: 24, right: 16, y: 8 },
         },
         UIRow.with(
             UIImage.with({
                 url: bind("userService.profile.image"),
                 dimensions: { width: 16, height: 16 },
-                controlStyle: { borderRadius: 16 }
+                decoration: { borderRadius: 16 },
             }),
             UISpacer,
 
@@ -51,9 +60,9 @@ export default UIFlowCell.with(
                 disabled: bind("!commentDraft"),
                 onClick: "postComment()",
                 style: styles.formButtonStyle.extend({
-                    textStyle: { fontSize: 14, lineHeight: 1, bold: true }
-                })
+                    textStyle: { fontSize: 14, lineHeight: 1, bold: true },
+                }),
             })
         )
     )
-)
+);

@@ -30,6 +30,6 @@ BrowserApplication.run(
     ProfileActivity,
     SettingsActivity,
     EditorActivity,
-    ArticleActivity,
+    ArticleActivity
     // ... add activities here
 );

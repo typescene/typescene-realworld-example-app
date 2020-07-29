@@ -1,16 +1,12 @@
-import { CHANGE, managedChild, ManagedList, ManagedRecord, ManagedService, service } from "typescene";
+import { managedChild, ManagedList, ManagedRecord, ManagedService, service } from "typescene";
 import { RemoteService } from "./Remote";
 import { Profile } from "./User";
 
-// NOTE: for some apps it can be worthwhile to use proper classes for
-// all models, and put them in a 'models' folder.
-
 /** All fields for an article object */
-export interface Article {
-    slug?: string;
-    title: string;
-    description: string;
-    body: string;
+export class Article extends ManagedRecord {
+    constructor(public slug = "", public title = "", public description = "", public body = "") {
+        super();
+    }
     tagList?: string[];
     createdAt?: string;
     updatedAt?: string;
@@ -20,11 +16,11 @@ export interface Article {
 }
 
 /** All fields for a comment object */
-export interface Comment {
+export class Comment extends ManagedRecord {
     id?: string;
     createdAt?: string;
     updatedAt?: string;
-    body: string;
+    body?: string;
     author?: Profile;
 }
 
@@ -38,12 +34,11 @@ export interface ArticleQuery {
 }
 
 /** Managed list of comments */
-export type CommentList = ManagedList<ManagedRecord & Comment>;
+export type CommentList = ManagedList<Comment>;
 
 /** Represents an article feed that can be updated at another offset */
 export class ArticleFeed extends ManagedRecord {
-    constructor(public readonly query: ArticleQuery,
-        public readonly isPersonalFeed?: boolean) {
+    constructor(public readonly query: ArticleQuery, public readonly isPersonalFeed?: boolean) {
         super();
     }
 
@@ -58,8 +53,7 @@ export class ArticleFeed extends ManagedRecord {
             let params = "";
             let q = this.query;
             for (let key in q) {
-                params += "&" + key + "=" +
-                    encodeURIComponent((q as any)[key]);
+                params += "&" + key + "=" + encodeURIComponent((q as any)[key]);
             }
             let path = this.isPersonalFeed ? "articles/feed" : "articles";
             let result = await this.remote!.getAsync(path + "?" + params.slice(1));
@@ -71,23 +65,22 @@ export class ArticleFeed extends ManagedRecord {
             // check if not destroyed while loading
             if (this.managedState) {
                 this.totalCount = result.articlesCount || 0;
-                this.list.replace(articles.map(ManagedRecord.create));
+                this.list.replace(articles.map(a => Article.create(a)));
                 this.offset = offset || 0;
                 this.error = false;
-                this.emit(CHANGE);
+                this.emitChange();
             }
-        }
-        catch (err) {
+        } catch (err) {
             console.log(err);
             this.error = true;
-            this.emit(CHANGE);
+            this.emitChange();
         }
         this.loading = false;
     }
 
     /** The actual list of articles */
     @managedChild
-    list = new ManagedList<ManagedRecord & Article>();
+    list = new ManagedList<Article>();
 
     /** True if the list is currently loading */
     loading?: boolean;
@@ -119,23 +112,23 @@ export class ArticlesService extends ManagedService {
     /** Returns the article for given slug */
     async getArticleAsync(slug: string) {
         let result = await this.remote!.getAsync("articles/" + slug);
-        let article: Article = result.article;
+        let article: Partial<Article> = result.article;
         if (!article || !article.slug) {
             throw Error("Invalid article");
         }
-        return ManagedRecord.create(article);
+        return Article.create(article);
     }
 
     /** Saves (create/update) given article data, returns the resulting record */
     async saveArticleAsync(article: Article) {
-        let result = article.slug ?
-            await this.remote!.putAsync("articles/" + article.slug, { article }) :
-            await this.remote!.postAsync("articles", { article });
-        let created: Article = result.article;
+        let result = article.slug
+            ? await this.remote!.putAsync("articles/" + article.slug, { article })
+            : await this.remote!.postAsync("articles", { article });
+        let created: Partial<Article> = result.article;
         if (!created || !created.slug) {
             throw Error("Invalid article");
         }
-        return ManagedRecord.create(created);
+        return Article.create(created);
     }
 
     /** Deletes the article with given slug */
@@ -156,22 +149,21 @@ export class ArticlesService extends ManagedService {
     /** Returns a managed list of Comment records */
     async getCommentsAsync(slug: string): Promise<CommentList> {
         let result = await this.remote!.getAsync("articles/" + slug + "/comments");
-        let comments: Comment[] = result.comments;
+        let comments: Array<Partial<Comment>> = result.comments;
         if (!Array.isArray(comments)) {
             throw Error("Invalid comments listing");
         }
-        return new ManagedList(...comments.map(ManagedRecord.create));
+        return new ManagedList(...comments.map(c => Comment.create(c)));
     }
 
     /** Saves (creates) given comment for the article with given slug */
-    async addCommmentAsync(slug: string, comment: Comment) {
-        let result = await this.remote!.postAsync(
-            "articles/" + slug + "/comments", { comment });
-        let created: Comment = result.comment;
+    async addCommmentAsync(slug: string, comment: Partial<Comment>) {
+        let result = await this.remote!.postAsync("articles/" + slug + "/comments", { comment });
+        let created: Partial<Comment> = result.comment;
         if (!created || !created.id) {
             throw Error("Invalid comment");
         }
-        return ManagedRecord.create(created);
+        return Comment.create(created);
     }
 
     /** Deletes given comment from the article with given slug */

@@ -1,14 +1,14 @@
 const path = require("path");
-const CopyPlugin = require('copy-webpack-plugin');
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
     entry: {
-        app: path.resolve(__dirname, "app.ts")
+        app: path.resolve(__dirname, "app.ts"),
     },
     output: {
         filename: "[name].bundle.js",
         chunkFilename: "[name].[chunkhash].bundle.js",
-        path: path.resolve(__dirname, "../dist")
+        path: path.resolve(__dirname, "../dist"),
     },
     resolve: {
         extensions: [".ts", ".js"],
@@ -18,11 +18,18 @@ module.exports = {
             {
                 test: /\.ts$/,
                 loader: "ts-loader",
-                options: { transpileOnly: true }
-            }
-        ]
+                options: { transpileOnly: true },
+            },
+        ],
     },
     plugins: [
-        new CopyPlugin([path.resolve(__dirname, "public")])
-    ]
+        new CopyPlugin({
+            patterns: [
+                {
+                    from: path.resolve(__dirname, "public"),
+                    to: path.resolve(__dirname, "../dist"),
+                },
+            ],
+        }),
+    ],
 };

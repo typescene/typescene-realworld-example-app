@@ -7,23 +7,23 @@ export default UIFlowCell.with(
         background: "@text^-3%",
         textColor: "@background",
         dimensions: { minHeight: 185 },
-        padding: { y: 16 }
+        padding: { y: 16 },
     },
     UIFlowCell.with(
         {
             padding: { top: 24, x: 8 },
             dimensions: { width: "100%", maxWidth: 940 },
-            position: { gravity: "center" }
+            position: { gravity: "center" },
         },
 
         // article heading (title)
         UIHeading1.with({
             text: bind("article.title"),
-            style: styles.articleHeadingStyle
+            style: styles.articleHeadingStyle,
         }),
         UISpacer.withHeight(24),
 
         // buttons (follow/fave/edit/delete)
         ArticleButtons
     )
-)
+);

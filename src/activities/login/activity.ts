@@ -1,4 +1,4 @@
-import { ManagedRecord, PageViewActivity, service } from "typescene";
+import { PageViewActivity, service, UIFormContext } from "typescene";
 import { UserService } from "../../services/User";
 import view from "./view";
 
@@ -10,29 +10,26 @@ export class LoginActivity extends PageViewActivity.with(view) {
     userService!: UserService;
 
     /** Input form record, bound to the form displayed */
-    inputForm = ManagedRecord.create({
+    inputForm = UIFormContext.create({
         email: "",
-        password: ""
-    });
+        password: "",
+    })
+        .required("email")
+        .required("password");
 
     /** True if currently trying to log in */
     loading = false;
 
     /** Event handler: attempt login */
     async doLogin() {
-        if (!this.inputForm.email ||
-            !this.inputForm.password ||
-            this.loading) {
-            return;
-        }
+        this.inputForm.validateAll();
+        if (!this.inputForm.valid) return;
         this.loading = true;
         try {
             // call the API and navigate home if successful
-            await this.userService.loginAsync(
-                this.inputForm.email, this.inputForm.password);
+            await this.userService.loginAsync(this.inputForm.get("email")!, this.inputForm.get("password")!);
             this.getApplication()!.navigate("/");
-        }
-        catch (err) {
+        } catch (err) {
             this.showConfirmationDialogAsync(err.message);
         }
         this.loading = false;

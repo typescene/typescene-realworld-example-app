@@ -1,5 +1,5 @@
-import { managedChild, ManagedRecord, PageViewActivity, service } from "typescene";
-import { Profile, UserService } from "../../services/User";
+import { managedChild, PageViewActivity, service, UIFormContext } from "typescene";
+import { UserService } from "../../services/User";
 import view from "./view";
 
 /** Settings page activity */
@@ -10,9 +10,9 @@ export class SettingsActivity extends PageViewActivity.with(view) {
     @service("App.User")
     userService!: UserService;
 
-    /** Current user profile record */
+    /** Current user form fields */
     @managedChild
-    profile?: ManagedRecord & Profile;
+    formContext?: UIFormContext;
 
     async onManagedStateActivatingAsync() {
         await this.userService.loadAsync();
@@ -25,11 +25,11 @@ export class SettingsActivity extends PageViewActivity.with(view) {
         }
 
         // update input form with profile data
-        this.profile = ManagedRecord.create<Profile>({
+        this.formContext = UIFormContext.create({
             image: user.image || "",
             username: user.username,
             bio: user.bio || "",
-            email: user.email
+            email: user.email,
         });
     }
 
@@ -37,11 +37,11 @@ export class SettingsActivity extends PageViewActivity.with(view) {
     async submit() {
         try {
             // call the API and navigate back to the user's own profile
-            await this.userService.saveProfileAsync({ ... this.profile! });
-            this.getApplication()!.navigate(
-                "/profile/" + this.userService.profile!.username);
-        }
-        catch (err) {
+            await this.userService.saveProfileAsync({
+                ...this.formContext!.serialize(),
+            });
+            this.getApplication()!.navigate("/profile/" + this.userService.profile!.username);
+        } catch (err) {
             this.showConfirmationDialogAsync(String(err.message));
         }
     }

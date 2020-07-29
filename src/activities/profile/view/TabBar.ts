@@ -5,11 +5,11 @@ export default TabBar.with(
     TabBarButton.with({
         label: bind("isOwnProfile|then(My Articles)|or(Articles)"),
         onClick: "showArticles()",
-        selected: bind("visibleFeed").match("articles")
+        selected: bind("visibleFeed").match("articles"),
     }),
     TabBarButton.with({
         label: "Favorites",
         onClick: "showFaves()",
-        selected: bind("visibleFeed").match("fav")
+        selected: bind("visibleFeed").match("fav"),
     })
-)
+);

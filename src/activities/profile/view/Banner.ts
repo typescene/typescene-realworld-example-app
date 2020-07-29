@@ -1,4 +1,15 @@
-import { bind, bindf, UICenterRow, UIColumn, UIFlowCell, UIHeading2, UIImage, UIOppositeRow, UIOutlineButton, UIParagraph } from "typescene";
+import {
+    bind,
+    bindf,
+    UICenterRow,
+    UIColumn,
+    UIFlowCell,
+    UIHeading2,
+    UIImage,
+    UIOppositeRow,
+    UIOutlineButton,
+    UIParagraph,
+} from "typescene";
 import * as styles from "../../../styles";
 
 export default UIFlowCell.with(
@@ -12,19 +23,19 @@ export default UIFlowCell.with(
             hidden: bind("!profile"),
             dimensions: { width: "100%", maxWidth: 750 },
             layout: { gravity: "center" },
-            position: { gravity: "center" }
+            position: { gravity: "center" },
         },
 
         // profile banner information:
         UIImage.with({
             url: bind("profile.image"),
             dimensions: { width: 100, height: 100 },
-            controlStyle: { borderRadius: 100 }
+            decoration: { borderRadius: 100 },
         }),
         UICenterRow.with(
             UIHeading2.with({
                 text: bind("username"),
-                textStyle: { bold: true }
+                textStyle: { bold: true },
             })
         ),
         UICenterRow.with(
@@ -33,8 +44,8 @@ export default UIFlowCell.with(
                 textStyle: {
                     align: "center",
                     color: "@text/50%",
-                    fontWeight: 300
-                }
+                    fontWeight: 300,
+                },
             })
         ),
 
@@ -48,7 +59,7 @@ export default UIFlowCell.with(
                     icon: "add",
                     iconMargin: 4,
                     style: styles.bannerButtonStyle,
-                    onClick: "toggleFollowProfile()"
+                    onClick: "toggleFollowProfile()",
                 })
             ),
             UIOppositeRow.with(
@@ -56,14 +67,14 @@ export default UIFlowCell.with(
                 UIOutlineButton.with({
                     label: "Profile settings",
                     style: styles.bannerButtonStyle,
-                    navigateTo: "/settings"
+                    navigateTo: "/settings",
                 }),
                 UIOutlineButton.with({
                     label: "Logout",
                     style: styles.redBannerButtonStyle,
-                    onClick: "doLogout()"
+                    onClick: "doLogout()",
                 })
             )
         )
     )
-)
+);

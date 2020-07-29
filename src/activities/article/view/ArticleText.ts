@@ -1,4 +1,13 @@
-import { bind, UICloseLabel, UIFlowCell, UIListCellAdapter, UIListController, UIParagraph, UIRow, UISeparator } from "typescene";
+import {
+    bind,
+    UICloseLabel,
+    UIFlowCell,
+    UIListCellAdapter,
+    UIListController,
+    UIParagraph,
+    UIRow,
+    UISeparator,
+} from "typescene";
 import * as styles from "../../../styles";
 
 export default UIFlowCell.with(
@@ -15,8 +24,8 @@ export default UIFlowCell.with(
         textStyle: {
             fontFamily: "Source Serif Pro, serif",
             fontSize: 19.2,
-            lineBreakMode: "normal"
-        }
+            lineBreakMode: "normal",
+        },
     }),
 
     // list of article tags:
@@ -30,20 +39,20 @@ export default UIFlowCell.with(
             UICloseLabel.with({
                 text: bind("object.tag"),
                 style: styles.tagButtonStyle.extend({
-                    controlStyle: {
+                    decoration: {
                         css: {
                             cursor: "auto",
-                            padding: ".25rem .5rem"
-                        }
-                    }
-                })
+                            padding: ".25rem .5rem",
+                        },
+                    },
+                }),
             })
         ),
         UIRow.with({
-            layout: { wrapContent: true }
+            layout: { wrapContent: true },
         })
     ),
 
     // add a line to the bottom of the article:
     UISeparator.with({ margin: 24 })
-)
+);

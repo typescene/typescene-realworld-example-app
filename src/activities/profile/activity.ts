@@ -1,4 +1,4 @@
-import { CHANGE, managedChild, ManagedRecord, PageViewActivity, service } from "typescene";
+import { managedChild, PageViewActivity, service } from "typescene";
 import { FEED_LIMIT } from "../../app";
 import { ArticleFeed, ArticlesService } from "../../services/Articles";
 import { Profile, UserService } from "../../services/User";
@@ -17,7 +17,7 @@ export class ProfileActivity extends PageViewActivity.with(view) {
 
     /** The current profile record */
     @managedChild
-    profile?: ManagedRecord & Profile;
+    profile?: Profile;
 
     /** 'Own' articles feed, loaded and displayed asynchronously */
     @managedChild
@@ -46,17 +46,16 @@ export class ProfileActivity extends PageViewActivity.with(view) {
     async loadAsync() {
         await this.userService.loadAsync();
         this.profile = await this.userService.getProfileAsync(this.username);
-        this.isOwnProfile = !!this.userService.profile &&
-             this.profile.username === this.userService.profile.username;
+        this.isOwnProfile = !!this.userService.profile && this.profile.username === this.userService.profile.username;
 
         // load both feeds asynchronously
         this.articlesFeed = await this.articlesService.getArticleFeed({
             author: this.username,
-            limit: FEED_LIMIT
+            limit: FEED_LIMIT,
         });
         this.favesFeed = await this.articlesService.getArticleFeed({
             favorited: this.username,
-            limit: FEED_LIMIT
+            limit: FEED_LIMIT,
         });
     }
 
@@ -65,15 +64,13 @@ export class ProfileActivity extends PageViewActivity.with(view) {
         if (!this.profile) return;
         try {
             this.profile.following = !this.profile.following;
-            this.profile.emit(CHANGE);
+            this.profile.emitChange();
             if (this.profile.following) {
                 await this.userService.followUserAsync(this.username);
-            }
-            else {
+            } else {
                 await this.userService.unfollowUserAsync(this.username);
             }
-        }
-        catch (err) {
+        } catch (err) {
             // TODO: show warning
         }
     }
@@ -95,24 +92,25 @@ export class ProfileActivity extends PageViewActivity.with(view) {
     }
 }
 
-ProfileActivity.observe(class {
-    constructor (public readonly activity: ProfileActivity) { }
+ProfileActivity.addObserver(
+    class {
+        constructor(public readonly activity: ProfileActivity) {}
 
-    async onMatchChangeAsync() {
-        this.activity.profile = undefined;
-        this.activity.visibleFeed = "articles";
-        this.activity.articlesFeed = undefined;
-        this.activity.favesFeed = undefined;
-        if (this.activity.match) {
-            // decode username and load user service and activity now
-            let username = decodeURIComponent(this.activity.match.username);
-            this.activity.name = this.activity.username = username;
-            try {
-                await this.activity.loadAsync();
-            }
-            catch (err) {
-                this.activity.showConfirmationDialogAsync(err.message);
+        async onMatchChangeAsync() {
+            this.activity.profile = undefined;
+            this.activity.visibleFeed = "articles";
+            this.activity.articlesFeed = undefined;
+            this.activity.favesFeed = undefined;
+            if (this.activity.match) {
+                // decode username and load user service and activity now
+                let username = decodeURIComponent(this.activity.match.username);
+                this.activity.name = this.activity.username = username;
+                try {
+                    await this.activity.loadAsync();
+                } catch (err) {
+                    this.activity.showConfirmationDialogAsync(err.message);
+                }
             }
         }
     }
-})
+);

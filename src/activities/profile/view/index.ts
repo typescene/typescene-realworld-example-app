@@ -16,7 +16,7 @@ export default UIScrollContainer.with(
         UIFlowCell.with(
             {
                 dimensions: { width: "100%", maxWidth: 750 },
-                position: { gravity: "center" }
+                position: { gravity: "center" },
             },
             TabBar,
             UIFlowCell.with(
@@ -29,4 +29,4 @@ export default UIScrollContainer.with(
             )
         )
     )
-)
+);

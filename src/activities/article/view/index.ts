@@ -10,20 +10,19 @@ export default UIScrollContainer.with(
             hidden: bind("activity.loaded"),
             background: "@text/97%",
             textColor: "@background",
-            dimensions: { height: 185 }
+            dimensions: { height: 185 },
         },
 
         // error message if the article cannot be loaded:
         UIFlowCell.with(
             { hidden: bind("!error") },
             UICenterRow.with(UIHeading3.withText("Oops")),
-            UICenterRow.with(UIParagraph.withText(
-                "An error occurred while loading this page."))
+            UICenterRow.with(UIParagraph.withText("An error occurred while loading this page."))
         )
     ),
 
     // display the inner activity view when ready:
     UIViewRenderer.with({
-        view: bind("activity")
+        view: bind("activity"),
     })
-)
+);

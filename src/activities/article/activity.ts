@@ -1,5 +1,15 @@
 import * as marked from "marked";
-import { CHANGE, managedChild, ManagedList, ManagedRecord, PageViewActivity, service, UIComponentEvent, UIListCellAdapterEvent, UITextField, ViewActivity } from "typescene";
+import {
+    managedChild,
+    ManagedList,
+    PageViewActivity,
+    service,
+    UIComponentEvent,
+    UIListCellAdapterEvent,
+    UITextField,
+    ViewActivity,
+    ManagedRecord,
+} from "typescene";
 import { Article, ArticlesService, Comment, CommentList } from "../../services/Articles";
 import { TagList } from "../../services/Tags";
 import { UserService } from "../../services/User";
@@ -9,7 +19,7 @@ import { CommentCard } from "./view/CommentCard";
 
 /** 'Inner' activity, displays article itself */
 export class ArticleInnerActivity extends ViewActivity.with(ArticleView) {
-    constructor(article: ManagedRecord & Article) {
+    constructor(article: Article) {
         super();
         this.article = article;
     }
@@ -22,7 +32,7 @@ export class ArticleInnerActivity extends ViewActivity.with(ArticleView) {
 
     /** The article itself */
     @managedChild
-    readonly article: ManagedRecord & Article;
+    readonly article: Article;
 
     /** List of comments, loaded asynchronously */
     @managedChild
@@ -50,24 +60,22 @@ export class ArticleInnerActivity extends ViewActivity.with(ArticleView) {
         // wait for user service, and check profile data
         await this.userService.loadAsync();
         if (this.userService.profile) {
-            this.isOwnProfile =
-                this.userService.profile.username === this.article.author!.username;
+            this.isOwnProfile = this.userService.profile.username === this.article.author!.username;
         }
 
         // parse article and populate tags
         this.bodyHtml = marked.parse(this.article.body);
-        this.tags = new ManagedList(...(this.article.tagList || [])
-            .map(tag => ManagedRecord.create({ tag })));
+        this.tags = new ManagedList(...(this.article.tagList || []).map(tag => ManagedRecord.create({ tag })));
 
         this.loaded = true;
-        this.emit(CHANGE);
+        this.emitChange();
 
         // load comments asynchronously
         (async () => {
             this.comments = await this.articlesService.getCommentsAsync(this.article.slug!);
         })().catch(err => {
             console.log(err);
-        })
+        });
     }
 
     /** Event handler, navigates to the author's profile */
@@ -83,17 +91,18 @@ export class ArticleInnerActivity extends ViewActivity.with(ArticleView) {
     /** Event handler, deletes the article after confirmation by the user */
     async deleteArticle() {
         let confirm = await this.showConfirmationDialogAsync(
-            "Are you sure you want to delete this article?\n" +
-            "This action cannot be undone.",
-            "", "Yes, delete", "Cancel");
+            "Are you sure you want to delete this article?\n" + "This action cannot be undone.",
+            "",
+            "Yes, delete",
+            "Cancel"
+        );
         if (confirm) {
             this.comments = undefined;
             this.tags = undefined;
             this.bodyHtml = "Please wait...";
             try {
                 await this.articlesService.deleteArticleAsync(this.article.slug!);
-            }
-            catch (err) {
+            } catch (err) {
                 this.showConfirmationDialogAsync(err.message);
             }
 
@@ -108,17 +117,15 @@ export class ArticleInnerActivity extends ViewActivity.with(ArticleView) {
         try {
             // update client side first
             author.following = !author.following;
-            this.article.emit(CHANGE);
+            this.article.emitChange();
 
             // call the appropriate API
             if (author.following) {
                 await this.userService.followUserAsync(author.username);
-            }
-            else {
+            } else {
                 await this.userService.unfollowUserAsync(author.username);
             }
-        }
-        catch (err) {
+        } catch (err) {
             // TODO: show warning
         }
     }
@@ -127,17 +134,15 @@ export class ArticleInnerActivity extends ViewActivity.with(ArticleView) {
     toggleArticleFav() {
         // update client side first
         this.article.favorited = !this.article.favorited;
-        this.article.favoritesCount = (this.article.favoritesCount || 0) +
-            (this.article.favorited ? 1 : -1);
-        this.article.emit(CHANGE);
+        this.article.favoritesCount = (this.article.favoritesCount || 0) + (this.article.favorited ? 1 : -1);
+        this.article.emitChange();
 
         // call the appropriate API
         if (this.article.favorited) {
             this.articlesService.favoriteArticleAsync(this.article.slug!).catch(err => {
                 this.showConfirmationDialogAsync(err.message);
             });
-        }
-        else {
+        } else {
             this.articlesService.unfavoriteArticleAsync(this.article.slug!).catch(err => {
                 this.showConfirmationDialogAsync(err.message);
             });
@@ -159,16 +164,15 @@ export class ArticleInnerActivity extends ViewActivity.with(ArticleView) {
     }
 
     /** Event handler: delete a comment */
-    async deleteComment(e: UIListCellAdapterEvent<ManagedRecord & Comment>) {
+    async deleteComment(e: UIListCellAdapterEvent<Comment>) {
         if (!e.object || !e.object.id) return;
         try {
             let card = e.source.getParentComponent(CommentCard);
             if (card) card.deleting = true;
             await this.articlesService.deleteCommentAsync(this.article.slug!, e.object.id);
             this.comments && this.comments.remove(e.object);
-        }
-        catch (err) {
-            console.log(err)
+        } catch (err) {
+            console.log(err);
             this.showConfirmationDialogAsync(err.message);
         }
     }
@@ -201,21 +205,22 @@ export class ArticleActivity extends PageViewActivity.with(view) {
             this.activity = new ArticleInnerActivity(article);
             await this.activity.activateAsync();
             this.error = false;
-        }
-        catch (err) {
+        } catch (err) {
             console.log(err);
             this.error = true;
         }
     }
 }
 
-ArticleActivity.observe(class {
-    constructor (public readonly activity: ArticleActivity) { }
-    async onMatchChangeAsync() {
-        if (!this.activity.match) return;
+ArticleActivity.addObserver(
+    class {
+        constructor(public readonly activity: ArticleActivity) {}
+        async onMatchChangeAsync() {
+            if (!this.activity.match) return;
 
-        // find the current slug and load the actual article
-        let slug = this.activity.match.slug;
-        if (slug) this.activity.loadArticleAsync(slug);
+            // find the current slug and load the actual article
+            let slug = this.activity.match.slug;
+            if (slug) this.activity.loadArticleAsync(slug);
+        }
     }
-})
+);

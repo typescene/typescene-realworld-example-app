@@ -17,10 +17,9 @@ export class TagsService extends ManagedService {
     remote?: RemoteService;
 
     /** Returns a full list of 'popular' tags */
-    async getTagsAsync(): Promise<TagList>{
+    async getTagsAsync(): Promise<TagList> {
         let result = await this.remote!.getAsync("tags");
         let tags: string[] = result.tags;
-        return new ManagedList(...tags.map(tag =>
-            ManagedRecord.create({ tag })));
+        return new ManagedList(...tags.map(tag => ManagedRecord.create({ tag })));
     }
 }

@@ -1,9 +1,9 @@
-import { CHANGE, managed, ManagedRecord, ManagedService, service } from "typescene";
+import { managed, ManagedRecord, ManagedService, service } from "typescene";
 import { RemoteService } from "./Remote";
 
 /** Fields for a user profile record */
-export interface Profile {
-    username: string;
+export class Profile extends ManagedRecord {
+    username!: string;
     bio?: string;
     image?: string;
     following?: boolean;
@@ -26,8 +26,7 @@ export class UserService extends ManagedService {
             setTimeout(() => {
                 this._validateAsync(token!);
             }, 10);
-        }
-        else {
+        } else {
             // no token, resolve immediately
             this._loadedResolve();
         }
@@ -41,7 +40,7 @@ export class UserService extends ManagedService {
 
     /** Loaded profile data, if the user is logged in (loaded asynchronously) */
     @managed
-    profile?: ManagedRecord & Profile;
+    profile?: Profile;
 
     /** Sign out the current user and forget token */
     logout() {
@@ -49,7 +48,7 @@ export class UserService extends ManagedService {
         sessionStorage.setItem("jwt", "");
         this.profile = undefined;
         this.isLoggedIn = false;
-        this.emit(CHANGE);
+        this.emitChange();
     }
 
     /** Wait for current profile data to be loaded, if any */
@@ -60,16 +59,14 @@ export class UserService extends ManagedService {
     /** Register a new user with given fields */
     async registerAsync(username: string, email: string, password: string) {
         this.remoteService.token = undefined;
-        let result = await this.remoteService.postAsync("users",
-            { user: { username, email, password } });
+        let result = await this.remoteService.postAsync("users", { user: { username, email, password } });
         this._setProfile(result.user);
     }
 
     /** Attempt to log in with given credentials */
     async loginAsync(email: string, password: string) {
         this.remoteService.token = undefined;
-        let result = await this.remoteService.postAsync("users/login",
-            { user: { email, password } });
+        let result = await this.remoteService.postAsync("users/login", { user: { email, password } });
         this._setProfile(result.user);
     }
 
@@ -81,28 +78,28 @@ export class UserService extends ManagedService {
     }
 
     /** Returns the user profile for given user */
-    async getProfileAsync(username: string): Promise<ManagedRecord & Profile> {
+    async getProfileAsync(username: string): Promise<Profile> {
         username = encodeURIComponent(username);
         let result = await this.remoteService.getAsync("profiles/" + username);
-        let profile: Profile = result.profile;
+        let profile: Partial<Profile> = result.profile;
         if (!profile || !profile.username) {
             throw Error("Invalid user profile");
         }
-        return ManagedRecord.create(profile);
+        return Profile.create(profile);
     }
 
     /** Start following given user; emits a change event if successful */
     async followUserAsync(username: string) {
         username = encodeURIComponent(username);
         await this.remoteService.postAsync("profiles/" + username + "/follow", {});
-        this.emit(CHANGE);
+        this.emitChange();
     }
 
     /** Stop following given user; emits a change event if successful */
     async unfollowUserAsync(username: string) {
         username = encodeURIComponent(username);
         await this.remoteService.deleteAsync("profiles/" + username + "/follow");
-        this.emit(CHANGE);
+        this.emitChange();
     }
 
     private async _validateAsync(token: string) {
@@ -112,14 +109,13 @@ export class UserService extends ManagedService {
             if (!result.user) throw Error("Invalid response");
             if (!result.user.token) result.user.token = token;
             this._setProfile(result.user);
-        }
-        catch {
+        } catch {
             this.logout();
         }
         this._loadedResolve();
     }
 
-    private _setProfile(profile: Profile) {
+    private _setProfile(profile: Partial<Profile>) {
         if (!profile || !profile.username) {
             throw Error("Invalid user profile");
         }
@@ -127,11 +123,13 @@ export class UserService extends ManagedService {
             this.remoteService.token = profile.token;
             sessionStorage.setItem("jwt", profile.token);
         }
-        this.profile = ManagedRecord.create(profile);
+        this.profile = Profile.create(profile);
         this.isLoggedIn = true;
-        this.emit(CHANGE);
+        this.emitChange();
     }
 
-    private _loadedP = new Promise(r => { this._loadedResolve = r });
+    private _loadedP = new Promise(r => {
+        this._loadedResolve = r;
+    });
     private _loadedResolve!: () => void;
 }

@@ -7,15 +7,11 @@ export default UIFlowCell.with(
         padding: { x: 8, top: 32 },
         dimensions: { width: "100%", maxWidth: 595 },
         position: { gravity: "center" },
-        onDeleteComment: "deleteComment()"
+        onDeleteComment: "deleteComment()",
     },
 
     // list of comments:
-    UIListController.with(
-        { items: bind("comments") },
-        CommentCard,
-        UICloseColumn
-    ),
+    UIListController.with({ items: bind("comments") }, CommentCard, UICloseColumn),
 
     // comment editor for posting new comments:
     CommentEditor,
@@ -24,10 +20,8 @@ export default UIFlowCell.with(
     UICenterRow.with(
         { hidden: bind("userService.isLoggedIn") },
         UILabel.with({
-            text: "<a href=\"#/login\">Sign in</a> " +
-                "or <a href=\"#/register\">sign up</a> " +
-                "to add comments.",
-            htmlFormat: true
+            text: '<a href="#/login">Sign in</a> ' + 'or <a href="#/register">sign up</a> ' + "to add comments.",
+            htmlFormat: true,
         })
     )
-)
+);

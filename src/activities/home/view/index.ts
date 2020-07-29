@@ -14,12 +14,12 @@ export default UIScrollContainer.with(
             {
                 dimensions: { width: "100%", maxWidth: 940 },
                 position: { gravity: "center" },
-                layout: { wrapContent: true }
+                layout: { wrapContent: true },
             },
             UIFlowCell.with(
                 {
                     dimensions: { minWidth: "60%", shrink: 1, grow: 100 },
-                    position: { gravity: "start" }
+                    position: { gravity: "start" },
                 },
                 TabBar,
                 UIFlowCell.with(
@@ -36,8 +36,8 @@ export default UIScrollContainer.with(
                 )
             ),
             TagList.with({
-                onSelectTag: "selectTag()"
+                onSelectTag: "selectTag()",
             })
         )
     )
-)
+);
