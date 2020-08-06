@@ -55,7 +55,7 @@ export default UIFlowCell.with(
             UIOppositeRow.with(
                 { hidden: bind("isOwnProfile") },
                 UIOutlineButton.with({
-                    label: bindf("${profile.following|then(Unf)|or(F)}ollow ${username}"),
+                    label: bindf("%1${then:Unfollow:Follow} %2$s", "profile.following", "username"),
                     icon: "add",
                     iconMargin: 4,
                     style: styles.bannerButtonStyle,

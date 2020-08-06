@@ -37,7 +37,7 @@ const ArticleHeader = UIRow.with(
             onClick: "goToProfile()",
         }),
         UICloseLabel.with({
-            text: bind("object.createdAt|tt(date)"),
+            text: bind("object.createdAt|local:date"),
             textStyle: { fontSize: 12.8, color: "@text/30%" },
         })
     ),

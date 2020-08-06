@@ -34,7 +34,7 @@ export default UIRow.with(
             onClick: "goToProfile()",
         }),
         UICloseLabel.with({
-            text: bind("article.createdAt|tt(date)"),
+            text: bind("article.createdAt|local:date"),
             textStyle: { fontSize: 12.8, color: "inherit" },
             decoration: { css: { opacity: ".5" } },
         })
@@ -47,7 +47,7 @@ export default UIRow.with(
         UICloseRow.with(
             UIOutlineButton.with({
                 hidden: bind("isOwnProfile"),
-                label: bindf("${article.author.following|then(Unf)|or(F)}ollow ${article.author.username}"),
+                label: bindf("%1${then:Unfollow:Follow} %2$s", "article.author.following", "article.author.username"),
                 icon: "add",
                 iconMargin: 4,
                 style: styles.reverseBannerButtonStyle,

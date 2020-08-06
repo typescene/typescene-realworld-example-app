@@ -1,9 +1,9 @@
-import { bind } from "typescene";
+import { bind, bindf } from "typescene";
 import { TabBar, TabBarButton } from "../../../shared/TabBar";
 
 export default TabBar.with(
     TabBarButton.with({
-        label: bind("isOwnProfile|then(My Articles)|or(Articles)"),
+        label: bindf("%{then:My Articles:Articles}", "isOwnProfile"),
         onClick: "showArticles()",
         selected: bind("visibleFeed").match("articles"),
     }),

@@ -54,7 +54,7 @@ export class CommentCard extends UIListCellAdapter.with(
                 onClick: "goToProfile()",
             }),
             UICloseLabel.with({
-                text: bind("object.createdAt|tt(date)"),
+                text: bind("object.createdAt|local:date"),
                 textStyle: {
                     lineHeight: 1,
                     fontSize: 12,
