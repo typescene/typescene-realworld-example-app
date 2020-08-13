@@ -18,58 +18,62 @@ import { FEED_LIMIT } from "../app";
 import { Article, ArticleFeed, ArticlesService } from "../services/Articles";
 import ArticlePreview from "./ArticlePreview";
 
-/** Main wrapper around the feed list, including messages and pagination */
-const Wrapper = UIFlowCell.with(
-    {
-        onArticleClicked: "goToArticle()",
-        onFavButtonClicked: "toggleArticleFav()",
-    },
-
-    // messages:
-    UIFlowCell.with({ hidden: bind("!feed.loading"), padding: 16 }, UIRow.with(UILabel.withText("Loading..."))),
-    UIFlowCell.with({ hidden: bind("!feed.error"), padding: 16 }, UIRow.with(UILabel.withText("An error occurred."))),
-    UIFlowCell.with({ hidden: bind("!empty"), padding: 16 }, UIRow.with(UILabel.withText("No articles here... yet."))),
-
-    // actual list of article previews:
-    UIListController.with(
-        { items: bind("visibleArticles") },
-        ArticlePreview,
-        UIFlowCell.with({
-            separator: { type: "line" },
-            asyncContentRendering: true,
-        })
-    ),
-    UISpacer,
-
-    // pagination links:
-    UICenterRow.with(
-        UILinkButton.with({
-            hidden: bind("isAtStart"),
-            disabled: bind("moving"),
-            label: "<< Newest",
-            onClick: "moveToNewest()",
-        }),
-        UILinkButton.with({
-            hidden: bind("isAtStart"),
-            disabled: bind("moving"),
-            label: "< Newer",
-            onClick: "moveToNewer()",
-        }),
-        UILinkButton.with({
-            hidden: bind("!hasNext"),
-            disabled: bind("moving"),
-            label: "Older >",
-            onClick: "moveToOlder()",
-        })
-    )
-);
-
 /** View component that displays a paginated article feed */
-export class ArticleFeedList extends ViewComponent.with(Wrapper) {
-    static preset(presets: { feed: ArticleFeed }) {
-        return super.preset(presets);
-    }
+export class ArticleFeedList extends ViewComponent.with({
+    view: UIFlowCell.with(
+        {
+            onArticleClicked: "goToArticle()",
+            onFavButtonClicked: "toggleArticleFav()",
+        },
 
+        // messages:
+        UIFlowCell.with({ hidden: bind("!feed.loading"), padding: 16 }, UIRow.with(UILabel.withText("Loading..."))),
+        UIFlowCell.with(
+            { hidden: bind("!feed.error"), padding: 16 },
+            UIRow.with(UILabel.withText("An error occurred."))
+        ),
+        UIFlowCell.with(
+            { hidden: bind("!empty"), padding: 16 },
+            UIRow.with(UILabel.withText("No articles here... yet."))
+        ),
+
+        // actual list of article previews:
+        UIListController.with(
+            { items: bind("visibleArticles") },
+            ArticlePreview,
+            UIFlowCell.with({
+                separator: { type: "line" },
+                asyncContentRendering: true,
+            })
+        ),
+        UISpacer,
+
+        // pagination links:
+        UICenterRow.with(
+            UILinkButton.with({
+                hidden: bind("isAtStart"),
+                disabled: bind("moving"),
+                label: "<< Newest",
+                onClick: "moveToNewest()",
+            }),
+            UILinkButton.with({
+                hidden: bind("isAtStart"),
+                disabled: bind("moving"),
+                label: "< Newer",
+                onClick: "moveToNewer()",
+            }),
+            UILinkButton.with({
+                hidden: bind("!hasNext"),
+                disabled: bind("moving"),
+                label: "Older >",
+                onClick: "moveToOlder()",
+            })
+        )
+    ),
+    defaults: {
+        feed: undefined as ArticleFeed | undefined,
+    },
+}) {
     /** Article feed (preset only once) */
     @managed
     readonly feed?: ArticleFeed;
