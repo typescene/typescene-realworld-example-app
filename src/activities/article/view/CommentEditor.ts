@@ -8,7 +8,7 @@ import {
     UISeparator,
     UISpacer,
 } from "typescene";
-import * as styles from "../../../styles";
+import { styles } from "../../../styles";
 
 export default UIFlowCell.with(
     {
@@ -28,7 +28,7 @@ export default UIFlowCell.with(
                 onInput: "updateCommentDraft()",
                 multiline: true,
                 dimensions: { height: 100 },
-                style: styles.formFieldStyle.extend({
+                style: styles.formField.extend({
                     decoration: {
                         background: "@white",
                         css: { padding: "1rem .5rem" },
@@ -59,7 +59,7 @@ export default UIFlowCell.with(
                 label: "Post Comment",
                 disabled: bind("!commentDraft"),
                 onClick: "postComment()",
-                style: styles.formButtonStyle.extend({
+                style: styles.formButton.extend({
                     textStyle: { fontSize: 14, lineHeight: 1, bold: true },
                 }),
             })

@@ -13,7 +13,7 @@ import {
     UITextField,
 } from "typescene";
 import NavBar from "../../../shared/NavBar";
-import * as styles from "../../../styles";
+import { styles } from "../../../styles";
 
 export default UIScrollContainer.with(
     NavBar,
@@ -42,7 +42,7 @@ export default UIScrollContainer.with(
                     placeholder: "Username",
                     name: "username",
                     disabled: bind("loading"),
-                    style: styles.formFieldStyle,
+                    style: styles.formField,
                     requestFocus: true,
                 })
             ),
@@ -51,7 +51,7 @@ export default UIScrollContainer.with(
                     placeholder: "Email",
                     name: "email",
                     disabled: bind("loading"),
-                    style: styles.formFieldStyle,
+                    style: styles.formField,
                 })
             ),
             UIRow.with(
@@ -60,7 +60,7 @@ export default UIScrollContainer.with(
                     type: "password",
                     name: "password",
                     disabled: bind("loading"),
-                    style: styles.formFieldStyle,
+                    style: styles.formField,
                     onEnterKeyPress: "doLogin()",
                 })
             ),
@@ -70,7 +70,7 @@ export default UIScrollContainer.with(
                 UIPrimaryButton.with({
                     label: "Sign up",
                     disabled: bind("loading"),
-                    style: styles.formButtonStyle,
+                    style: styles.formButton,
                     onClick: "doRegister()",
                 })
             )

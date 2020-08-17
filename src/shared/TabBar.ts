@@ -15,45 +15,45 @@ import {
 // full version here.
 // ============================================================================
 
-/** Default tab bar style */
-const defaultStyle = UIStyle.create("TabBar", {
-    position: { gravity: "stretch" },
-    containerLayout: { axis: "horizontal", distribution: "start" },
-    dimensions: { grow: 0 },
-    decoration: { css: { zIndex: "10" } },
-});
-
-/** Default tab bar button style */
-const tabBarButtonStyle = UIStyle.create("TabBarButton", {
-    position: { gravity: "end" },
-    dimensions: { height: 42, maxHeight: 42, minWidth: 32, shrink: 0 },
-    textStyle: { align: "start", color: "@text" },
-    decoration: {
-        borderRadius: 0,
-        background: "transparent",
-        css: {
-            paddingLeft: "1rem",
-            paddingRight: "1rem",
-            borderLeft: "0",
-            borderRight: "0",
-            transition: "all .2s ease-in-out",
-        },
+const styles = UIStyle.group({
+    bar: {
+        position: { gravity: "stretch" },
+        containerLayout: { axis: "horizontal", distribution: "start" },
+        dimensions: { grow: 0 },
+        decoration: { css: { zIndex: "10" } },
     },
-})
-    .addState("hover", {
-        decoration: { background: "@background^-3%" },
-        textStyle: { color: "@primary" },
-    })
-    .addState("focused", {
-        decoration: { background: "@background^-3%", dropShadow: 0.1 },
-    })
-    .addState("selected", {
-        textStyle: { color: "@primary" },
+    button: UIStyle.create("TabBarButton", {
+        position: { gravity: "end" },
+        dimensions: { height: 42, maxHeight: 42, minWidth: 32, shrink: 0 },
+        textStyle: { align: "start", color: "@text" },
         decoration: {
-            border: "2px solid @primary",
-            css: { borderLeft: "0", borderRight: "0", borderTopColor: "transparent" },
+            borderRadius: 0,
+            background: "transparent",
+            css: {
+                paddingLeft: "1rem",
+                paddingRight: "1rem",
+                borderLeft: "0",
+                borderRight: "0",
+                transition: "all .2s ease-in-out",
+            },
         },
-    });
+    })
+        .addState("hover", {
+            decoration: { background: "@background^-3%" },
+            textStyle: { color: "@primary" },
+        })
+        .addState("focused", {
+            decoration: { background: "@background^-3%", dropShadow: 0.1 },
+        })
+        .addState("selected", {
+            textStyle: { color: "@primary" },
+            decoration: {
+                borderThickness: 2,
+                borderColor: "@primary",
+                css: { borderLeft: "0", borderRight: "0", borderTopColor: "transparent" },
+            },
+        }),
+});
 
 /** A button with predefined styles for use within a tab bar */
 export class TabBarButton extends UIBorderlessButton {
@@ -63,7 +63,7 @@ export class TabBarButton extends UIBorderlessButton {
 
     constructor(label?: string) {
         super(label);
-        this.style = this.style.mixin(tabBarButtonStyle);
+        this.style = this.style.mixin(styles.button);
     }
 
     selected?: boolean;
@@ -126,6 +126,6 @@ export class TabBar extends UICell {
         this.borderColor = "@primary";
         this.borderStyle = "solid";
         this.borderThickness = "0 0 .0625rem 0";
-        this.style = this.style.mixin(defaultStyle);
+        this.style = this.style.mixin(styles.bar);
     }
 }

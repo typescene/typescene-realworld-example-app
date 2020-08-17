@@ -1,5 +1,5 @@
 import { bind, UIFlowCell, UIHeading1, UISpacer } from "typescene";
-import * as styles from "../../../styles";
+import { styles } from "../../../styles";
 import ArticleButtons from "./ArticleButtons";
 
 export default UIFlowCell.with(
@@ -19,7 +19,7 @@ export default UIFlowCell.with(
         // article heading (title)
         UIHeading1.with({
             text: bind("article.title"),
-            style: styles.articleHeadingStyle,
+            style: styles.articleHeading,
         }),
         UISpacer.withHeight(24),
 

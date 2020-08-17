@@ -4,7 +4,7 @@ const styles = UIStyle.group({
     Banner: {
         decoration: {
             background: "@primary",
-            textColor: "@primary^-10%:text",
+            textColor: "@primary^-10%.text",
             padding: { y: 32 },
             dropShadow: -0.15,
         },

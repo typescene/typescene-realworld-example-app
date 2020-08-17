@@ -8,7 +8,7 @@ import {
     UIRow,
     UISeparator,
 } from "typescene";
-import * as styles from "../../../styles";
+import { styles } from "../../../styles";
 
 export default UIFlowCell.with(
     {
@@ -38,7 +38,7 @@ export default UIFlowCell.with(
             },
             UICloseLabel.with({
                 text: bind("object.tag"),
-                style: styles.tagButtonStyle.extend({
+                style: styles.tagButton.extend({
                     decoration: {
                         css: {
                             cursor: "auto",

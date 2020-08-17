@@ -15,7 +15,7 @@ import {
     UITextField,
 } from "typescene";
 import NavBar from "../../../shared/NavBar";
-import * as styles from "../../../styles";
+import { styles } from "../../../styles";
 
 export default UIScrollContainer.with(
     NavBar,
@@ -37,7 +37,7 @@ export default UIScrollContainer.with(
                 UITextField.with({
                     placeholder: "URL of profile picture",
                     name: "image",
-                    style: styles.formFieldStyle.extend({
+                    style: styles.formField.extend({
                         textStyle: { fontSize: 14 },
                     }),
                 })
@@ -46,7 +46,7 @@ export default UIScrollContainer.with(
                 UITextField.with({
                     placeholder: "Username",
                     name: "username",
-                    style: styles.formFieldStyle,
+                    style: styles.formField,
                     requestFocus: true,
                 })
             ),
@@ -56,7 +56,7 @@ export default UIScrollContainer.with(
                     name: "bio",
                     multiline: true,
                     dimensions: { height: 200 },
-                    style: styles.formFieldStyle.extend({
+                    style: styles.formField.extend({
                         textStyle: { lineHeight: 1.4 },
                         decoration: { css: { paddingTop: ".5rem" } },
                     }),
@@ -66,7 +66,7 @@ export default UIScrollContainer.with(
                 UITextField.with({
                     placeholder: "Email",
                     name: "email",
-                    style: styles.formFieldStyle,
+                    style: styles.formField,
                 })
             ),
             UIRow.with(
@@ -74,7 +74,7 @@ export default UIScrollContainer.with(
                     placeholder: "New password",
                     name: "password",
                     type: "password",
-                    style: styles.formFieldStyle,
+                    style: styles.formField,
                 })
             ),
 
@@ -83,7 +83,7 @@ export default UIScrollContainer.with(
                 UIPrimaryButton.with({
                     label: "Update Settings",
                     disabled: bind("loading"),
-                    style: styles.formButtonStyle,
+                    style: styles.formButton,
                     onClick: "submit()",
                 })
             )

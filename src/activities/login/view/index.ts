@@ -1,6 +1,20 @@
-import { bind, UICenterRow, UIColumn, UIFlowCell, UIFormContextController, UIHeading2, UILinkButton, UIOppositeRow, UIPrimaryButton, UIRow, UIScrollContainer, UISpacer, UITextField } from "typescene";
+import {
+    bind,
+    UICenterRow,
+    UIColumn,
+    UIFlowCell,
+    UIFormContextController,
+    UIHeading2,
+    UILinkButton,
+    UIOppositeRow,
+    UIPrimaryButton,
+    UIRow,
+    UIScrollContainer,
+    UISpacer,
+    UITextField,
+} from "typescene";
 import NavBar from "../../../shared/NavBar";
-import * as styles from "../../../styles";
+import { styles } from "../../../styles";
 
 export default UIScrollContainer.with(
     NavBar,
@@ -8,17 +22,15 @@ export default UIScrollContainer.with(
         {
             dimensions: { width: "100%", maxWidth: 470 },
             position: { gravity: "center" },
-            padding: 24
+            padding: 24,
         },
 
         // heading text:
-        UICenterRow.with(
-            UIHeading2.withText("Sign In", { fontSize: 40 }),
-        ),
+        UICenterRow.with(UIHeading2.withText("Sign In", { fontSize: 40 })),
         UICenterRow.with(
             UILinkButton.with({
                 label: "Need an account?",
-                navigateTo: "/register"
+                navigateTo: "/register",
             })
         ),
         UISpacer.withHeight(16),
@@ -33,8 +45,8 @@ export default UIScrollContainer.with(
                         placeholder: "Email",
                         name: "email",
                         disabled: bind("loading"),
-                        style: styles.formFieldStyle,
-                        requestFocus: true
+                        style: styles.formField,
+                        requestFocus: true,
                     })
                 ),
                 UIRow.with(
@@ -43,8 +55,8 @@ export default UIScrollContainer.with(
                         type: "password",
                         name: "password",
                         disabled: bind("loading"),
-                        style: styles.formFieldStyle,
-                        onEnterKeyPress: "doLogin()"
+                        style: styles.formField,
+                        onEnterKeyPress: "doLogin()",
                     })
                 ),
 
@@ -53,11 +65,11 @@ export default UIScrollContainer.with(
                     UIPrimaryButton.with({
                         label: "Sign in",
                         disabled: bind("loading"),
-                        style: styles.formButtonStyle,
-                        onClick: "doLogin()"
+                        style: styles.formButton,
+                        onClick: "doLogin()",
                     })
                 )
             )
         )
     )
-)
+);

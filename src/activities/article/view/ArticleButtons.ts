@@ -12,7 +12,7 @@ import {
     UISpacer,
 } from "typescene";
 import FavButton from "../../../shared/FavButton";
-import * as styles from "../../../styles";
+import { styles } from "../../../styles";
 
 export default UIRow.with(
     // author information and timestamp:
@@ -50,20 +50,20 @@ export default UIRow.with(
                 label: bindf("%1${then:Unfollow:Follow} %2$s", "article.author.following", "article.author.username"),
                 icon: "add",
                 iconMargin: 4,
-                style: styles.reverseBannerButtonStyle,
+                style: styles.reverseBannerButton,
                 onClick: "toggleFollowProfile()",
             }),
             UIOutlineButton.with({
                 hidden: bind("!isOwnProfile"),
                 label: "Edit article",
-                style: styles.reverseBannerButtonStyle,
+                style: styles.reverseBannerButton,
                 onClick: "editArticle()",
             }),
             UISpacer,
             UIOutlineButton.with({
                 hidden: bind("!isOwnProfile"),
                 label: "Delete",
-                style: styles.redBannerButtonStyle,
+                style: styles.redBannerButton,
                 onClick: "deleteArticle()",
             }),
             FavButton.with({

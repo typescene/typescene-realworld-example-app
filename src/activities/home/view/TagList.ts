@@ -10,7 +10,7 @@ import {
     UISpacer,
     UILabel,
 } from "typescene";
-import * as styles from "../../../styles";
+import { styles } from "../../../styles";
 
 export default UIFlowCell.with(
     {
@@ -37,7 +37,7 @@ export default UIFlowCell.with(
                 UISmallButton.with({
                     label: bind("object.tag"),
                     onClick: "+SelectTag",
-                    style: styles.tagButtonStyle,
+                    style: styles.tagButton,
                 })
             ),
             UICell.with({

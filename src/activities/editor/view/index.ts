@@ -11,7 +11,7 @@ import {
     UITextField,
 } from "typescene";
 import NavBar from "../../../shared/NavBar";
-import * as styles from "../../../styles";
+import { styles } from "../../../styles";
 
 export default UIScrollContainer.with(
     NavBar,
@@ -29,14 +29,14 @@ export default UIScrollContainer.with(
                 UITextField.with({
                     placeholder: "Article Title",
                     name: "title",
-                    style: styles.formFieldStyle,
+                    style: styles.formField,
                 })
             ),
             UIRow.with(
                 UITextField.with({
                     placeholder: "Short description",
                     name: "description",
-                    style: styles.formFieldStyle.extend({
+                    style: styles.formField.extend({
                         textStyle: { fontSize: 16 },
                     }),
                 })
@@ -47,7 +47,7 @@ export default UIScrollContainer.with(
                     name: "body",
                     multiline: true,
                     dimensions: { height: 280 },
-                    style: styles.formFieldStyle.extend({
+                    style: styles.formField.extend({
                         textStyle: { fontSize: 16, lineHeight: 1.4 },
                         decoration: { css: { paddingTop: ".5rem" } },
                     }),
@@ -57,7 +57,7 @@ export default UIScrollContainer.with(
                 UITextField.with({
                     placeholder: "Enter tags",
                     name: "tagsString",
-                    style: styles.formFieldStyle.extend({
+                    style: styles.formField.extend({
                         textStyle: { fontSize: 16 },
                     }),
                 })
@@ -66,7 +66,7 @@ export default UIScrollContainer.with(
                 UIPrimaryButton.with({
                     label: "Publish Article",
                     disabled: bind("loading"),
-                    style: styles.formButtonStyle,
+                    style: styles.formButton,
                     onClick: "submit()",
                 })
             )

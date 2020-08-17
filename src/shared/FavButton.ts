@@ -12,11 +12,11 @@ const favButtonStyle = UIStyle.create({
     },
 })
     .addState("hover", {
-        textStyle: { color: "@primary^-20%:text" },
+        textStyle: { color: "@primary^-20%.text" },
     })
     .addState("selected", {
         decoration: { background: "@primary^-20%" },
-        textStyle: { color: "@primary^-20%:text" },
+        textStyle: { color: "@primary^-20%.text" },
     });
 
 /** Favorite button (label to be provided using preset) */

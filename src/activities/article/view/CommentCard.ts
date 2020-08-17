@@ -16,7 +16,7 @@ import {
 } from "typescene";
 import { Comment } from "../../../services/Articles";
 import { UserService } from "../../../services/User";
-import * as styles from "../../../styles";
+import { styles } from "../../../styles";
 
 /** List item view adapter for a single comment */
 export class CommentCard extends UIListCellAdapter.with(
@@ -68,7 +68,7 @@ export class CommentCard extends UIListCellAdapter.with(
                 hidden: bind("!isOwnProfile"),
                 icon: "delete",
                 disabled: bind("deleting"),
-                style: styles.bannerButtonStyle,
+                style: styles.bannerButton,
                 onClick: "+DeleteComment",
             })
         )

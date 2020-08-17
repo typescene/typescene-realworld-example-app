@@ -10,7 +10,7 @@ import {
     UIOutlineButton,
     UIParagraph,
 } from "typescene";
-import * as styles from "../../../styles";
+import { styles } from "../../../styles";
 
 export default UIFlowCell.with(
     {
@@ -58,7 +58,7 @@ export default UIFlowCell.with(
                     label: bindf("%1${then:Unfollow:Follow} %2$s", "profile.following", "username"),
                     icon: "add",
                     iconMargin: 4,
-                    style: styles.bannerButtonStyle,
+                    style: styles.bannerButton,
                     onClick: "toggleFollowProfile()",
                 })
             ),
@@ -66,12 +66,12 @@ export default UIFlowCell.with(
                 { hidden: bind("!isOwnProfile") },
                 UIOutlineButton.with({
                     label: "Profile settings",
-                    style: styles.bannerButtonStyle,
+                    style: styles.bannerButton,
                     navigateTo: "/settings",
                 }),
                 UIOutlineButton.with({
                     label: "Logout",
-                    style: styles.redBannerButtonStyle,
+                    style: styles.redBannerButton,
                     onClick: "doLogout()",
                 })
             )
