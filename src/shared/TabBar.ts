@@ -1,131 +1,136 @@
 import {
-    UIBorderlessButton,
-    UIButton,
-    UICell,
-    UIRenderableConstructor,
-    UIScrollContainer,
-    UISelectionController,
-    UIStyle,
+  UICell,
+  UIComponentEventHandler,
+  UISelectionController,
+  UIScrollContainer,
+  UIRenderableConstructor,
+  UIBorderlessButton,
+  UIButton,
+  UIStyle,
+  observe,
 } from "typescene";
 
-// ============================================================================
-// NOTE:
-// This component should typically be pulled in from e.g. typescene-web-nav
-// package, however for the purposes of this sample app we'll include the
-// full version here.
-// ============================================================================
+// NOTE: this is taken from @typescene/web-nav
+// Use that package as a dependency for production projects instead
 
-const styles = UIStyle.group({
-    bar: {
-        position: { gravity: "stretch" },
-        containerLayout: { axis: "horizontal", distribution: "start" },
-        dimensions: { grow: 0 },
-        decoration: { css: { zIndex: "10" } },
-    },
-    button: UIStyle.create("TabBarButton", {
-        position: { gravity: "end" },
-        dimensions: { height: 42, maxHeight: 42, minWidth: 32, shrink: 0 },
-        textStyle: { align: "start", color: "@text" },
-        decoration: {
-            borderRadius: 0,
-            background: "transparent",
-            css: {
-                paddingLeft: "1rem",
-                paddingRight: "1rem",
-                borderLeft: "0",
-                borderRight: "0",
-                transition: "all .2s ease-in-out",
-            },
-        },
-    })
-        .addState("hover", {
-            decoration: { background: "@background^-3%" },
-            textStyle: { color: "@primary" },
-        })
-        .addState("focused", {
-            decoration: { background: "@background^-3%", dropShadow: 0.1 },
-        })
-        .addState("selected", {
-            textStyle: { color: "@primary" },
-            decoration: {
-                borderThickness: 2,
-                borderColor: "@primary",
-                css: { borderLeft: "0", borderRight: "0", borderTopColor: "transparent" },
-            },
-        }),
+/** Style for `TabBar` */
+const _tabBarStyle = UIStyle.create("TabBar", {
+  position: { gravity: "stretch" },
+  containerLayout: { axis: "horizontal", distribution: "fill" },
+  dimensions: { grow: 0 },
+  decoration: {
+    css: { zIndex: "10" },
+    borderThickness: { bottom: 1 },
+    borderColor: "@text/35%",
+  },
+});
+const _tabBarInner = UIStyle.create("TabBar_inner", {
+  containerLayout: {
+    axis: "horizontal",
+    distribution: "start",
+  },
+  dimensions: { width: "100%", grow: 0 },
 });
 
-/** A button with predefined styles for use within a tab bar */
-export class TabBarButton extends UIBorderlessButton {
-    static preset(presets: UIButton.Presets & { selected: boolean }) {
-        return super.preset(presets);
-    }
+/** Style for `TabBarButton` */
+const _tabBarButtonStyle = UIStyle.create("TabBarButton", {
+  position: { gravity: "end" },
+  dimensions: { height: 42, maxHeight: 42, minWidth: 32, shrink: 0 },
+  textStyle: { align: "start" },
+  decoration: {
+    textColor: "@text",
+    borderRadius: 0,
+    background: "transparent",
+    borderThickness: 0,
+    padding: { x: 16 },
+    css: {
+      transition: "all .2s ease-in-out",
+    },
+  },
+})
+  .addState("hover", {
+    decoration: { background: "@primary/10%", textColor: "@primary" },
+  })
+  .addState("focused", {
+    decoration: { background: "@primary/10%", dropShadow: 0.1 },
+  })
+  .addState("selected", {
+    decoration: {
+      textColor: "@primary",
+      borderThickness: { bottom: 2, x: 0 },
+      padding: { top: 2, x: 16 },
+      borderColor: "@primary",
+    },
+  });
 
-    constructor(label?: string) {
-        super(label);
-        this.style = this.style.mixin(styles.button);
-    }
-
-    selected?: boolean;
+/**
+ * A bar containing tabs, for use with `TabBarButtonView`
+ */
+export class TabBar extends UICell.with({ style: _tabBarStyle }) {
+  static preset(
+    presets: UICell.Presets,
+    ...content: Array<UIRenderableConstructor | undefined>
+  ) {
+    return super.preset(
+      presets,
+      UISelectionController.with(
+        UIScrollContainer.with(
+          {
+            style: _tabBarInner,
+            horizontalScrollEnabled: true,
+          },
+          ...content
+        )
+      )
+    );
+  }
 }
-TabBarButton.addObserver(
-    class {
-        constructor(public readonly button: TabBarButton) {}
-        onSelectedChangeAsync() {
-            if (this.button.selected) {
-                this.button.propagateComponentEvent("Select");
-            } else {
-                this.button.propagateComponentEvent("Deselect");
-            }
-        }
-        onRendered() {
-            if (this.button.selected) {
-                this.button.propagateComponentEvent("Select");
-            }
-        }
-        onSelect() {
-            this.button.selected = true;
-        }
-        onDeselect() {
-            this.button.selected = false;
-        }
-        onClick() {
-            this.button.propagateComponentEvent("Select");
-        }
-        onArrowLeftKeyPress() {
-            this.button.requestFocusPrevious();
-        }
-        onArrowRightKeyPress() {
-            this.button.requestFocusNext();
-        }
-    }
-);
 
-/** A bar containing tabs, for use with `TabBarButton` */
-export class TabBar extends UICell {
-    static preset(presets: UICell.Presets, ...content: Array<UIRenderableConstructor>) {
-        return super.preset(
-            presets,
-            UISelectionController.with(
-                UIScrollContainer.with(
-                    {
-                        layout: { axis: "horizontal" },
-                        dimensions: { grow: 0 },
-                        horizontalScrollEnabled: true,
-                    },
-                    ...content
-                )
-            )
-        );
+/**
+ * Tab bar button, for use inside of `TabBarView`.
+ */
+export class TabBarButton extends UIBorderlessButton.with({
+  style: _tabBarButtonStyle,
+}) {
+  static preset(
+    presets: UIButton.Presets & {
+      selected?: boolean;
+      onSelect?: UIComponentEventHandler;
     }
+  ) {
+    return super.preset(presets);
+  }
+  selected?: boolean;
 
-    constructor() {
-        super();
-
-        // set properties here so they are overridden by style:
-        this.borderColor = "@primary";
-        this.borderStyle = "solid";
-        this.borderThickness = "0 0 .0625rem 0";
-        this.style = this.style.mixin(styles.bar);
+  @observe
+  static TabBarButtonObserver = class {
+    constructor(public readonly button: TabBarButton) {}
+    onSelectedChangeAsync() {
+      if (this.button.selected) {
+        this.button.emitAction("Select");
+      } else {
+        this.button.emitAction("Deselect");
+      }
     }
+    onRendered() {
+      if (this.button.selected) {
+        this.button.emitAction("Select");
+      }
+    }
+    onSelect() {
+      this.button.selected = true;
+    }
+    onDeselect() {
+      this.button.selected = false;
+    }
+    onClick() {
+      this.button.emitAction("Select");
+    }
+    onArrowLeftKeyPress() {
+      this.button.requestFocusPrevious();
+    }
+    onArrowRightKeyPress() {
+      this.button.requestFocusNext();
+    }
+  };
 }

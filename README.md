@@ -8,13 +8,15 @@
 
 This codebase was created to demonstrate a fully fledged fullstack application built with [Typescene](https://typescene.dev) including CRUD operations, authentication, routing, pagination, and more. Please submit bug fixes via pull requests & feedback via issues.
 
+**Note:** The Typescene framework was made for desktop and mobile-like apps, so this RealWorld implementation behaves strictly like a Single Page Application (SPA). There is no server-side rendering, and all code is bundled in a single JS file by design. While you _shouldn't_ implement a ‘Medium clone’ using Typescene, it's still an insteresting demo to show how Typescene works. 
+
 ## Getting started
 
 To get the frontend running locally:
 
 - Clone this repo
 - `npm install` to install all required (dev) dependencies
-- `npm run dev` to start the Webpack development server
+- `npm start` to start the Webpack development server
 - Open a browser to view the result on localhost port 8080
 - Please star [`typescene/typescene`](https://github.com/typescene/typescene) and follow [@typescene](https://twitter.com/typescene) to show your support!
 

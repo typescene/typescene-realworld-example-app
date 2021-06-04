@@ -24,12 +24,12 @@ new DefaultI18nService().register();
 
 // add all activities
 BrowserApplication.run(
-    HomeActivity,
-    LoginActivity,
-    RegisterActivity,
-    ProfileActivity,
-    SettingsActivity,
-    EditorActivity,
-    ArticleActivity
-    // ... add activities here
+  HomeActivity,
+  LoginActivity,
+  RegisterActivity,
+  ProfileActivity,
+  SettingsActivity,
+  EditorActivity,
+  ArticleActivity
+  // ... add activities here
 );
